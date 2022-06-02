@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>it.unict</groupId>
   <artifactId>rc-operator</artifactId>
-  <name>rc-operator</name>
+  <name>Runtime Configuration Operator</name>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <properties>
@@ -43,6 +43,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
       <version>${quarkus.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
     </dependency>
   </dependencies>
 
