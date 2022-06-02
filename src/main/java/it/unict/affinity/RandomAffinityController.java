@@ -4,12 +4,14 @@ import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @ApplicationScoped
-public class RandomAffinityController implements AffinityController {
+@Alternative
+public class RandomAffinityController extends AffinityController {
 
     @Override
     public void updateAffinities(List<Deployment> deploymentList, String topologyKey) {
