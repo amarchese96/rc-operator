@@ -4,7 +4,11 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 
 import java.util.List;
 
-public interface AffinityController {
+public abstract class AffinityController {
 
-    void updateAffinities(List<Deployment> deploymentList, String topologyKey);
+    protected final Integer minWeight = 1;
+
+    protected final Integer maxWeight = 100;
+
+    public abstract void updateAffinities(List<Deployment> deploymentList, String topologyKey);
 }
