@@ -1,7 +1,5 @@
 package it.unict;
 
-import io.fabric8.kubernetes.api.model.*;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentList;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.api.reconciler.Context;
@@ -38,7 +36,6 @@ public class ApplicationReconciler implements Reconciler<Application> {
     affinityController.updateAffinities(deploymentList.getItems(), resource.getSpec().getTopologyKey());
 
     deploymentList.getItems().forEach(d -> {
-      log.info(d.getMetadata().getName());
       client.apps().deployments().inNamespace(d.getMetadata().getNamespace()).patch(d);
     });
 
