@@ -12,6 +12,6 @@ import java.util.Map;
 public interface TelemetryService {
 
     @GET
-    @Path("/metrics/avg-traffic")
-    Uni<Map<String,Float>> getAvgTraffic(@QueryParam("app") String app, @QueryParam("node") String node);
+    @Path("/metrics/svc/avg-traffic")
+    Uni<Map<String,Float>> getAvgSvcTraffic(@QueryParam("app") String app, @QueryParam("svc") String service);
 }

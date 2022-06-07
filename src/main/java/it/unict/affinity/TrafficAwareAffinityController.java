@@ -36,39 +36,40 @@ public class TrafficAwareAffinityController extends AffinityController {
     private List<WeightedPodAffinityTerm> getPodAffinityTerms(Deployment deployment, String topologyKey) {
         List<WeightedPodAffinityTerm> podAffinityTerms = new ArrayList<>();
 
-        Map<String,Float> trafficValues = telemetryService.getAvgTraffic(
+        Map<String,Float> trafficValues = telemetryService.getAvgSvcTraffic(
                 deployment.getMetadata().getLabels().get("app"),
-                deployment.getMetadata().getLabels().get("node")
+                deployment.getMetadata().getLabels().get("svc")
         ).await().indefinitely();
 
-        Integer highest = Collections.max(trafficValues.values()).intValue();
-        Integer lowest = Collections.min(trafficValues.values()).intValue();
-        Integer oldRange = highest - lowest;
-        Integer newRange = maxWeight - minWeight;
+        if(!trafficValues.isEmpty()) {
+            Integer highest = Collections.max(trafficValues.values()).intValue();
+            Integer lowest = Collections.min(trafficValues.values()).intValue();
+            Integer oldRange = highest - lowest;
+            Integer newRange = maxWeight - minWeight;
 
-        trafficValues.entrySet().forEach(entry -> {
-            log.info("{}-{}: {}",
-                    deployment.getMetadata().getLabels().get("node"),
-                    entry.getKey(),
-                    entry.getValue()
-            );
-            Integer weight = (oldRange == 0) ? minWeight : ((entry.getValue().intValue() - lowest) * newRange / oldRange) + minWeight;
-            WeightedPodAffinityTerm wpat = new WeightedPodAffinityTermBuilder()
-                .withWeight(weight)
-                .withPodAffinityTerm(new PodAffinityTermBuilder()
-                        .withLabelSelector(new LabelSelectorBuilder()
-                                .withMatchLabels(
-                                        new HashMap<>() {{
-                                            put("app", deployment.getMetadata().getLabels().get("app"));
-                                            put("node", entry.getKey());
-                                        }}
-                                ).build())
-                        .withTopologyKey(topologyKey)
-                        .build())
-                .build();
-            podAffinityTerms.add(wpat);
-
-        });
+            trafficValues.entrySet().forEach(entry -> {
+                log.info("{}-{}: {}",
+                        deployment.getMetadata().getLabels().get("svc"),
+                        entry.getKey(),
+                        entry.getValue()
+                );
+                Integer weight = (oldRange == 0) ? minWeight : ((entry.getValue().intValue() - lowest) * newRange / oldRange) + minWeight;
+                WeightedPodAffinityTerm wpat = new WeightedPodAffinityTermBuilder()
+                        .withWeight(weight)
+                        .withPodAffinityTerm(new PodAffinityTermBuilder()
+                                .withLabelSelector(new LabelSelectorBuilder()
+                                        .withMatchLabels(
+                                                new HashMap<>() {{
+                                                    put("app", deployment.getMetadata().getLabels().get("app"));
+                                                    put("svc", entry.getKey());
+                                                }}
+                                        ).build())
+                                .withTopologyKey(topologyKey)
+                                .build())
+                        .build();
+                podAffinityTerms.add(wpat);
+            });
+        }
 
         log.info("-----");
         return podAffinityTerms;

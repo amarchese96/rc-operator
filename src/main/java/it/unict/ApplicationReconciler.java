@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class ApplicationReconciler implements Reconciler<Application> {
@@ -35,7 +37,10 @@ public class ApplicationReconciler implements Reconciler<Application> {
 
     affinityController.updateAffinities(deploymentList.getItems(), resource.getSpec().getTopologyKey());
 
+    Collections.shuffle(deploymentList.getItems());
+
     deploymentList.getItems().forEach(d -> {
+      d.getSpec().getTemplate().getMetadata().getLabels().put("rvalue", String.valueOf((int)Math.floor(Math.random()*(100))));
       client.apps().deployments().inNamespace(d.getMetadata().getNamespace()).patch(d);
     });
 

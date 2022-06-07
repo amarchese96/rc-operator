@@ -26,7 +26,7 @@ public class RandomAffinityController extends AffinityController {
                                             .withMatchLabels(
                                                     new HashMap<>() {{
                                                         put("app", d.getMetadata().getLabels().get("app"));
-                                                        put("node", od.getMetadata().getLabels().get("node"));
+                                                        put("svc", od.getMetadata().getLabels().get("svc"));
                                                     }}
                                             ).build())
                                     .withTopologyKey(topologyKey)
