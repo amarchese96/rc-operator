@@ -40,7 +40,11 @@ public class ApplicationReconciler implements Reconciler<Application> {
     Collections.shuffle(deploymentList.getItems());
 
     deploymentList.getItems().forEach(d -> {
-      d.getSpec().getTemplate().getMetadata().getLabels().put("rvalue", String.valueOf((int)Math.floor(Math.random()*(100))));
+      d.getSpec()
+              .getTemplate()
+              .getMetadata()
+              .getLabels()
+              .put("rvalue", String.valueOf((int)Math.floor(Math.random()*(resource.getSpec().getRescheduleFactor()))));
       client.apps().deployments().inNamespace(d.getMetadata().getNamespace()).patch(d);
     });
 

@@ -11,6 +11,8 @@ public class ApplicationSpec {
 
     private Integer rescheduleDelay;
 
+    private Integer rescheduleFactor;
+
     public String getName() {
         return name;
     }
@@ -22,4 +24,6 @@ public class ApplicationSpec {
     public String getTopologyKey() { return topologyKey; }
 
     public Integer getRescheduleDelay() { return rescheduleDelay; }
+
+    public Integer getRescheduleFactor() { return rescheduleFactor; }
 }
